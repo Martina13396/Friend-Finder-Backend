@@ -42,7 +42,7 @@ public class ReactsServiceImpl implements ReactsService {
     }
 
     @Override
-    @CacheEvict(value = "react" , key = "#reactRequestVm.postId")
+    @CacheEvict(value = "react" , allEntries = true)
     public ReactsDto toggleReacts(ReactRequestVm reactRequestVm) {
         AccountDto accountDto = (AccountDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
