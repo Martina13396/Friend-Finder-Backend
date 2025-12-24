@@ -135,7 +135,7 @@ public class AccountDetailsServiceImpl implements AccountDetailsService {
     }
 
     @Override
-    @Cacheable(value = "accountDetails" , key = "#accountId")
+    @Cacheable(value = "accountDetails" , key = "#accountId + 'friendDetails'")
     public AccountDetailsDto getFriendAccountDetails(Long accountId) {
        Optional<AccountDetails> accountDetails= accountDetailsRepo.findAccountDetailsByAccountId(accountId);
        if (!accountDetails.isPresent()) {

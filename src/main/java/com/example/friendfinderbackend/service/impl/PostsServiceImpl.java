@@ -73,7 +73,7 @@ public class PostsServiceImpl implements PostService {
     }
 
     @Override
-    @Cacheable(value = "post" , key = "#root.target.getCurrentUserId()")
+    @Cacheable(value = "post" , key = "#root.target.getCurrentUserId()+'allPosts'")
     public List<PostsDto> getPostsForUserAndFriends() {
 
         AccountDto accountDto = (AccountDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -132,7 +132,7 @@ public class PostsServiceImpl implements PostService {
     }
 
     @Override
-    @Cacheable(value = "post" , key = "#accountId")
+    @Cacheable(value = "post" , key = "#accountId + 'album'")
     public List<Map<String, Object>> getFriendAlbum(Long accountId) {
         return getMaps(accountId);
     }
@@ -151,7 +151,7 @@ public class PostsServiceImpl implements PostService {
     }
 
     @Override
-    @Cacheable(value = "post" , key = "#accountId")
+    @Cacheable(value = "post" , key = "#accountId + 'posts'")
     public List<PostsDto> getFriendPosts(Long accountId) {
        List<Posts> posts = postsRepo.findAllByAccountIdAndDeletedIsFalseOrderByCreatedAtDesc(accountId);
        return posts.stream().map(post -> postsMapper.toPostsDto(post)).collect(Collectors.toList());

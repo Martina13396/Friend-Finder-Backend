@@ -70,11 +70,13 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    @CacheEvict(value = "comments" , key = "#commentId")
+    @CacheEvict(value = "comments" , allEntries = true)
     public void deleteComment(Long commentId) {
         AccountDto accountDto = (AccountDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long accountId = accountDto.getId();
         Comments comments = commentsRepo.findById(commentId).orElseThrow(()->new RuntimeException("comment.not.found"));
+
+
 
         Long commentOwnerId = comments.getAccount().getId();
         Long postOwnerId = comments.getPost().getAccount().getId();

@@ -13,6 +13,7 @@ import com.example.friendfinderbackend.service.dto.securitydto.AccountDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,12 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    @CacheEvict(value = "friend" , allEntries = true)
+    @Caching(
+         evict = {
+                 @CacheEvict(value = "friend" , allEntries = true),
+                 @CacheEvict(value = "post" , allEntries = true)
+         }
+    )
     public void acceptFriendRequest(Long requestId) {
 
         FriendRequest request = friendRequestRepo.findById(requestId).orElseThrow(() -> new RuntimeException("request.not.found"));
@@ -91,7 +97,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    @Cacheable(value = "friend" , key = "#root.target.getCurrentId()+'requests'")
+    @Cacheable(value = "friend" , key = "#root.target.getCurrentUserId()+'requests'")
     public List<FriendRequestDto> getFriendRequestsForUser() {
     Long currentUserId = getCurrentUserId();
     List<FriendRequest> requests = friendRequestRepo.findAllByReceiverIdAndStatus(currentUserId, FriendRequestStatus.PENDING);
@@ -111,7 +117,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    @Cacheable(value = "friend" , key = "#root.target.getCurrentUserId()+'requestCount'")
+
     public Long getFriendRequestCountBySender() {
 
         Long accountId = getCurrentUserId();
