@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Long> {
 
-    Optional<Account> getAccountByEmail(String Email);
+    Optional<Account> getAccountByEmailIgnoreCase(String Email);
 
     @Query("""
 SELECT a from Account a where a.id <> :accountId

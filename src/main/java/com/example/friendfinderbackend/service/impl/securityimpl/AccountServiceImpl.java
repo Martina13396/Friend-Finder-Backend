@@ -9,6 +9,7 @@ import com.example.friendfinderbackend.service.dto.securitydto.AccountDto;
 import com.example.friendfinderbackend.service.dto.securitydto.RoleDto;
 import com.example.friendfinderbackend.service.securityservice.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
@@ -38,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Cacheable(value = "accounts" , key = "#email")
     public AccountDto getAccountByEmail(String email) {
-        Optional<Account> account = accountRepo.getAccountByEmail(email);
+        Optional<Account> account = accountRepo.getAccountByEmailIgnoreCase(email);
 
         if (!account.isPresent()) {
             throw  new RuntimeException("account.not.found");
@@ -47,13 +48,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @CacheEvict(value = "accounts" , allEntries = true)
     public AccountDto createAccount(AccountDto accountDto) {
      if(Objects.nonNull(accountDto.getId())){
          throw new RuntimeException("id.null");
 
      }
 
-        if (accountRepo.getAccountByEmail(accountDto.getEmail()).isPresent()) {
+        if (accountRepo.getAccountByEmailIgnoreCase(accountDto.getEmail()).isPresent()) {
 
             throw new RuntimeException("account.exist");
 
