@@ -151,7 +151,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    @Cacheable(value = "friends" , key = "#root.target.getCurrentUserId()+'acceptedRequests'")
+    @Cacheable(value = "friend" , key = "#root.target.getCurrentUserId()+'acceptedRequests'")
     public List<FriendRequestDto> getAcceptedFriendRequests() {
 
         Long currentUserId = getCurrentUserId();
